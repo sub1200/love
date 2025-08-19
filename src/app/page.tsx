@@ -126,6 +126,7 @@ const addActFormSchema = z.object({
 const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSelectChallenge: (act: Act) => void, onAddAct: (act: Act) => void }) => {
   const [filter, setFilter] = React.useState<ActCategory | "all">("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
+  const [revealedChallenge, setRevealedChallenge] = React.useState<Act | null>(null);
 
   const form = useForm<z.infer<typeof addActFormSchema>>({
     resolver: zodResolver(addActFormSchema),
@@ -133,6 +134,28 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSele
   });
 
   const { toast } = useToast();
+  
+  const handleRevealClick = () => {
+    const filteredActs = acts.filter(
+      (act) => filter === "all" || act.category === filter
+    );
+    if (filteredActs.length > 0) {
+      const randomIndex = Math.floor(Math.random() * filteredActs.length);
+      setRevealedChallenge(filteredActs[randomIndex]);
+    } else {
+      setRevealedChallenge(null);
+      toast({
+        variant: "destructive",
+        title: "لا توجد تحديات",
+        description: "لا توجد تحديات متاحة في هذه الفئة.",
+      });
+    }
+  };
+
+  React.useEffect(() => {
+    setRevealedChallenge(null);
+  }, [filter]);
+
 
   const handleAddSubmit = (values: z.infer<typeof addActFormSchema>) => {
     onAddAct({
@@ -147,10 +170,6 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSele
     setIsAddDialogOpen(false);
     form.reset();
   };
-
-  const filteredActs = acts.filter(
-    (act) => filter === "all" || act.category === filter
-  );
 
   const categories: { key: ActCategory | "all"; name: string, icon: React.ElementType }[] = [
     { key: "all", name: "الكل", icon: Library },
@@ -180,28 +199,43 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSele
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredActs.map((act) => (
-          <Card
-            key={act.id}
-            className="flex flex-col hover:shadow-primary/20 hover:shadow-lg transition-shadow duration-300"
+       <div className="flex flex-col items-center justify-center text-center py-16 px-4 bg-card rounded-xl shadow-lg min-h-[300px]">
+        {revealedChallenge ? (
+           <Card
+            className="w-full max-w-sm flex flex-col hover:shadow-primary/20 hover:shadow-lg transition-shadow duration-300"
           >
             <CardHeader>
-              <CardTitle className="font-headline text-xl">{act.title}</CardTitle>
+              <CardTitle className="font-headline text-xl">{revealedChallenge.title}</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow">
               <CardDescription className="line-clamp-3">
-                {act.description}
+                {revealedChallenge.description}
               </CardDescription>
             </CardContent>
-            <CardFooter>
-              <Button className="w-full" onClick={() => onSelectChallenge(act)}>
+            <CardFooter className="flex-col gap-2">
+              <Button className="w-full" onClick={() => onSelectChallenge(revealedChallenge)}>
                 <Sparkles className="mr-2 h-4 w-4" />
                 ابدأ التحدي
               </Button>
+              <Button className="w-full" variant="outline" onClick={handleRevealClick}>
+                <Dices className="mr-2 h-4 w-4" />
+                كشف تحدي آخر
+              </Button>
             </CardFooter>
           </Card>
-        ))}
+        ) : (
+          <>
+            <Library className="h-20 w-20 text-primary animate-pulse" />
+            <h2 className="mt-4 text-3xl font-headline font-bold">مكتبة الأفعال</h2>
+            <p className="mt-2 max-w-md text-muted-foreground">
+              هل أنت مستعد لتحدي جديد؟ اضغط على الزر أدناه للكشف عن تحدٍ من الفئة المحددة.
+            </p>
+             <Button size="lg" className="mt-8 text-lg" onClick={handleRevealClick}>
+                <Sparkles className="mr-3 h-6 w-6" />
+                اكشف عن تحدٍ
+            </Button>
+          </>
+        )}
       </div>
 
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
