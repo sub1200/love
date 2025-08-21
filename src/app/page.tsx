@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BrainCircuit, Dices, Heart, Library, Plus, Sparkles, TimerIcon } from "lucide-react";
+import { BrainCircuit, Dices, Edit, Heart, Library, Plus, Sparkles, TimerIcon } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -123,9 +123,11 @@ const addActFormSchema = z.object({
   category: z.enum(["vaginal", "anal", "tasting", "position"]),
 });
 
-const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSelectChallenge: (act: Act) => void, onAddAct: (act: Act) => void }) => {
+const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Act[], onSelectChallenge: (act: Act) => void, onAddAct: (act: Act) => void, onEditAct: (act: Act) => void }) => {
   const [filter, setFilter] = React.useState<ActCategory | "all">("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
+  const [editingAct, setEditingAct] = React.useState<Act | null>(null);
   const [revealedChallenge, setRevealedChallenge] = React.useState<Act | null>(null);
 
   const form = useForm<z.infer<typeof addActFormSchema>>({
@@ -170,6 +172,37 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSele
     setIsAddDialogOpen(false);
     form.reset();
   };
+  
+  const handleEditSubmit = (values: z.infer<typeof addActFormSchema>) => {
+    if (editingAct) {
+      onEditAct({
+        ...editingAct,
+        ...values,
+      });
+      toast({
+        title: "نجاح!",
+        description: "تم تعديل الأمر بنجاح.",
+      });
+      // Also update the currently revealed challenge if it's the one being edited
+      if (revealedChallenge && revealedChallenge.id === editingAct.id) {
+        setRevealedChallenge({ ...revealedChallenge, ...values });
+      }
+    }
+    setIsEditDialogOpen(false);
+    setEditingAct(null);
+    form.reset();
+  };
+
+  const openEditDialog = (act: Act) => {
+    setEditingAct(act);
+    form.reset({
+        title: act.title,
+        description: act.description,
+        category: act.category,
+    });
+    setIsEditDialogOpen(true);
+  }
+
 
   const categories: { key: ActCategory | "all"; name: string, icon: React.ElementType }[] = [
     { key: "all", name: "الكل", icon: Library },
@@ -212,12 +245,16 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSele
                 {revealedChallenge.description}
               </CardDescription>
             </CardContent>
-            <CardFooter className="flex-col gap-2">
+            <CardFooter className="grid grid-cols-2 gap-2">
               <Button className="w-full" onClick={() => onSelectChallenge(revealedChallenge)}>
                 <Sparkles className="mr-2 h-4 w-4" />
-                ابدأ التحدي
+                ابدأ
               </Button>
-              <Button className="w-full" variant="outline" onClick={handleRevealClick}>
+               <Button className="w-full" variant="secondary" onClick={() => openEditDialog(revealedChallenge)}>
+                <Edit className="mr-2 h-4 w-4" />
+                تعديل
+              </Button>
+              <Button className="w-full col-span-2" variant="outline" onClick={handleRevealClick}>
                 <Dices className="mr-2 h-4 w-4" />
                 كشف تحدي آخر
               </Button>
@@ -299,6 +336,69 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSele
           </Form>
         </DialogContent>
       </Dialog>
+      
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>تعديل الأمر</DialogTitle>
+            <DialogDescription>
+              قم بتعديل تفاصيل هذا التحدي.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleEditSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>العنوان</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>الوصف</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                   <FormItem>
+                    <FormLabel>الفئة</FormLabel>
+                     <select {...field} className={cn("flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50")}>
+                      {categories.filter(c => c.key !== 'all').map(c => (
+                        <option key={c.key} value={c.key}>{c.name}</option>
+                      ))}
+                    </select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button type="submit">حفظ التغييرات</Button>
+                 <DialogClose asChild>
+                    <Button type="button" variant="secondary" onClick={() => setEditingAct(null)}>إلغاء</Button>
+                 </DialogClose>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 };
@@ -307,6 +407,10 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct }: { acts: Act[], onSele
 const RandomChallenge = ({ acts, onSelectChallenge }: { acts: Act[], onSelectChallenge: (act: Act) => void }) => {
     
   const handleSpin = () => {
+    if (acts.length === 0) {
+        // Handle case where there are no acts
+        return;
+    }
     const randomIndex = Math.floor(Math.random() * acts.length);
     const randomAct = acts[randomIndex];
     onSelectChallenge(randomAct);
@@ -473,6 +577,10 @@ export default function Home() {
   const handleAddAct = (act: Act) => {
     setActs(prev => [act, ...prev]);
   }
+  
+  const handleEditAct = (updatedAct: Act) => {
+    setActs(prev => prev.map(act => act.id === updatedAct.id ? updatedAct : act));
+  }
 
   return (
     <main className="min-h-screen bg-background text-foreground font-body p-4 sm:p-6 lg:p-8">
@@ -498,7 +606,7 @@ export default function Home() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="library" className="mt-6">
-            <ActLibrary acts={acts} onSelectChallenge={handleSelectChallenge} onAddAct={handleAddAct} />
+            <ActLibrary acts={acts} onSelectChallenge={handleSelectChallenge} onAddAct={handleAddAct} onEditAct={handleEditAct} />
           </TabsContent>
           <TabsContent value="random" className="mt-6">
             <RandomChallenge acts={acts} onSelectChallenge={handleSelectChallenge} />
