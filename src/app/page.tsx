@@ -71,7 +71,7 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
 
   return (
     <div className="space-y-4">
-       {challenge.image ? (
+       {challenge.image && challenge.image.startsWith('http') ? (
         <div className="relative aspect-video w-full overflow-hidden rounded-lg">
           <Image
             src={challenge.image}
@@ -256,7 +256,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
            <Card
             className="w-full max-w-sm flex flex-col hover:shadow-primary/20 hover:shadow-lg transition-shadow duration-300"
           >
-            {revealedChallenge.image ? (
+            {revealedChallenge.image && revealedChallenge.image.startsWith('http') ? (
               <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
                  <Image
                     src={revealedChallenge.image}
@@ -692,3 +692,5 @@ export default function Home() {
     </main>
   );
 }
+
+    
