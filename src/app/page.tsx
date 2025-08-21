@@ -494,7 +494,8 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
         title: "تحدي مولد بالذكاء الاصطناعي",
         description: generatedChallenge,
         category: 'position',
-        timer: 600
+        timer: 600,
+        image: 'https://placehold.co/600x400.png',
       })
     }
   }
@@ -503,7 +504,7 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
     <Card className="max-w-3xl mx-auto shadow-lg">
       <CardHeader className="text-center">
         <BrainCircuit className="mx-auto h-16 w-16 text-primary" />
-        <CardTitle className="text-3xl font-headline">مولد التحديات بالذكاء الاصطناعي</CardTitle>
+        <CardTitle className="text-3xl font-headline">مولد التحديات بالذكااء الاصطناعي</CardTitle>
         <CardDescription>
           احصل على تحديات مخصصة تمامًا لكما بناءً على تفضيلاتكما وتفاعلاتكما السابقة.
         </CardDescription>
