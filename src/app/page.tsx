@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BrainCircuit, Dices, Edit, Heart, Library, Plus, Sparkles, TimerIcon } from "lucide-react";
+import { BrainCircuit, Dices, Edit, Heart, Library, Plus, Sparkles, TimerIcon, Image as ImageIcon } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,7 +71,7 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
 
   return (
     <div className="space-y-4">
-       {challenge.image && (
+       {challenge.image ? (
         <div className="relative aspect-video w-full overflow-hidden rounded-lg">
           <Image
             src={challenge.image}
@@ -80,6 +80,10 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
             className="object-cover"
             data-ai-hint="couple position"
           />
+        </div>
+      ) : (
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted flex items-center justify-center">
+            <ImageIcon className="h-16 w-16 text-muted-foreground" />
         </div>
       )}
       <DialogHeader>
@@ -133,6 +137,7 @@ const addActFormSchema = z.object({
   title: z.string().min(3, { message: "يجب أن يكون العنوان 3 أحرف على الأقل." }),
   description: z.string().min(10, { message: "يجب أن يكون الوصف 10 أحرف على الأقل." }),
   category: z.enum(["vaginal", "anal", "tasting", "position"]),
+  image: z.string().url({ message: "الرجاء إدخال رابط صورة صالح." }).optional().or(z.literal('')),
 });
 
 const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Act[], onSelectChallenge: (act: Act) => void, onAddAct: (act: Act) => void, onEditAct: (act: Act) => void }) => {
@@ -144,7 +149,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
 
   const form = useForm<z.infer<typeof addActFormSchema>>({
     resolver: zodResolver(addActFormSchema),
-    defaultValues: { title: "", description: "", category: "vaginal" },
+    defaultValues: { title: "", description: "", category: "vaginal", image: "" },
   });
 
   const { toast } = useToast();
@@ -187,17 +192,18 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
   
   const handleEditSubmit = (values: z.infer<typeof addActFormSchema>) => {
     if (editingAct) {
-      onEditAct({
+      const updatedAct = {
         ...editingAct,
         ...values,
-      });
+      };
+      onEditAct(updatedAct);
       toast({
         title: "نجاح!",
         description: "تم تعديل الأمر بنجاح.",
       });
       // Also update the currently revealed challenge if it's the one being edited
       if (revealedChallenge && revealedChallenge.id === editingAct.id) {
-        setRevealedChallenge({ ...revealedChallenge, ...values });
+        setRevealedChallenge(updatedAct);
       }
     }
     setIsEditDialogOpen(false);
@@ -211,6 +217,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
         title: act.title,
         description: act.description,
         category: act.category,
+        image: act.image || "",
     });
     setIsEditDialogOpen(true);
   }
@@ -249,7 +256,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
            <Card
             className="w-full max-w-sm flex flex-col hover:shadow-primary/20 hover:shadow-lg transition-shadow duration-300"
           >
-            {revealedChallenge.image && (
+            {revealedChallenge.image ? (
               <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
                  <Image
                     src={revealedChallenge.image}
@@ -259,6 +266,10 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                     data-ai-hint="couple position"
                   />
               </div>
+            ) : (
+                <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-muted flex items-center justify-center">
+                    <ImageIcon className="h-16 w-16 text-muted-foreground" />
+                </div>
             )}
             <CardHeader>
               <CardTitle className="font-headline text-xl">{revealedChallenge.title}</CardTitle>
@@ -334,6 +345,22 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                   </FormItem>
                 )}
               />
+               <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>رابط الصورة (اختياري)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      أضف رابط صورة لتوضيح الوضعية.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="category"
@@ -392,6 +419,22 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                     <FormControl>
                       <Textarea {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>رابط الصورة (اختياري)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.png" {...field} />
+                    </FormControl>
+                     <FormDescription>
+                      أضف رابط صورة لتوضيح الوضعية.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
