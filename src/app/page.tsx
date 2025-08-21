@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -71,7 +72,7 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
 
   return (
     <div className="space-y-4">
-       {challenge.image && challenge.image.startsWith('http') ? (
+       {challenge.image && (challenge.image.startsWith('http') || challenge.image.startsWith('data:image')) ? (
         <div className="relative aspect-video w-full overflow-hidden rounded-lg">
           <Image
             src={challenge.image}
@@ -137,7 +138,7 @@ const addActFormSchema = z.object({
   title: z.string().min(3, { message: "يجب أن يكون العنوان 3 أحرف على الأقل." }),
   description: z.string().min(10, { message: "يجب أن يكون الوصف 10 أحرف على الأقل." }),
   category: z.enum(["vaginal", "anal", "tasting", "position"]),
-  image: z.string().url({ message: "الرجاء إدخال رابط صورة صالح." }).optional().or(z.literal('')),
+  image: z.string().optional(),
 });
 
 const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Act[], onSelectChallenge: (act: Act) => void, onAddAct: (act: Act) => void, onEditAct: (act: Act) => void }) => {
@@ -222,6 +223,17 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
     setIsEditDialogOpen(true);
   }
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        fieldChange(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
 
   const categories: { key: ActCategory | "all"; name: string, icon: React.ElementType }[] = [
     { key: "all", name: "الكل", icon: Library },
@@ -256,7 +268,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
            <Card
             className="w-full max-w-sm flex flex-col hover:shadow-primary/20 hover:shadow-lg transition-shadow duration-300"
           >
-            {revealedChallenge.image && revealedChallenge.image.startsWith('http') ? (
+            {revealedChallenge.image && (revealedChallenge.image.startsWith('http') || revealedChallenge.image.startsWith('data:image')) ? (
               <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
                  <Image
                     src={revealedChallenge.image}
@@ -350,12 +362,16 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رابط الصورة (اختياري)</FormLabel>
+                    <FormLabel>صورة (اختياري)</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
+                      <Input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, field.onChange)} 
+                      />
                     </FormControl>
                     <FormDescription>
-                      أضف رابط صورة لتوضيح الوضعية.
+                      أضف صورة من جهازك لتوضيح الوضعية.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -428,12 +444,16 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>رابط الصورة (اختياري)</FormLabel>
+                    <FormLabel>صورة (اختياري)</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://example.com/image.png" {...field} />
+                       <Input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, field.onChange)} 
+                      />
                     </FormControl>
                      <FormDescription>
-                      أضف رابط صورة لتوضيح الوضعية.
+                      أضف صورة جديدة من جهازك لتغيير الصورة الحالية.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
