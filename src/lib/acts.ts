@@ -7,6 +7,7 @@ export interface Act {
   description: string;
   category: ActCategory;
   timer?: number; // in seconds
+  image?: string;
 }
 
 export const initialActs: Act[] = [
@@ -16,6 +17,7 @@ export const initialActs: Act[] = [
     description: "أحد الشريكين يهمس في أذن الآخر بأكثر الأفكار إثارة التي تخطر بباله بينما يكونان في وضع حميمي قريب. الهدف هو زيادة الإثارة من خلال الكلمات.",
     category: "position",
     timer: 300,
+    image: "https://placehold.co/600x400.png"
   },
   {
     id: "vag-001",
@@ -37,6 +39,7 @@ export const initialActs: Act[] = [
     description: "في أي وضع، حافظا على تواصل بصري عميق لمدة دقيقتين كاملتين دون انقطاع. حاولوا التعبير عن مشاعركم من خلال أعينكم فقط.",
     category: "position",
     timer: 120,
+    image: "https://placehold.co/600x400.png"
   },
   {
     id: "vag-002",
@@ -65,6 +68,7 @@ export const initialActs: Act[] = [
     description: "في وضع الملعقة، تشابكا بأيديكم وأرجلكم بأقصى قدر ممكن، مع التركيز على الشعور بالدفء والاتصال الجسدي الكامل.",
     category: "position",
     timer: 900,
+    image: "https://placehold.co/600x400.png"
   },
   { id: 'vag-003', title: 'مداعبة البظر بالفم', description: 'يقوم أحد الشريكين بمداعبة بظر الآخر بفمه لمدة 5 دقائق متواصلة.', category: 'vaginal', timer: 300 },
   { id: 'vag-004', title: 'استخدام الهزاز', description: 'استخدام الهزاز لتحفيز منطقة جي سبوت أثناء الإيلاج.', category: 'vaginal', timer: 600 },
@@ -72,7 +76,7 @@ export const initialActs: Act[] = [
   { id: 'vag-006', title: 'تأخير القذف', description: 'محاولة تأخير القذف لأطول فترة ممكنة، مع أخذ استراحات قصيرة.', category: 'vaginal', timer: 900 },
   { id: 'vag-007', title: 'القذف على الجسم', description: 'القذف على جزء من جسم الشريك (مثل الصدر أو البطن) ثم تدليكه.', category: 'vaginal' },
   { id: 'vag-008', title: 'القذف في الفم', description: 'القذف في فم الشريك مع التقبيل بعد ذلك.', category: 'vaginal' },
-  { id: 'vag-009', title: 'وضعية 69', description: 'ممارسة الجنس الفموي المتبادل في وضعية 69.', category: 'vaginal', timer: 600 },
+  { id: 'vag-009', title: 'وضعية 69', description: 'ممارسة الجنس الفموي المتبادل في وضعية 69.', category: 'vaginal', timer: 600, image: "https://placehold.co/600x400.png" },
   { id: 'vag-010', title: 'القبلة الفرنسية العميقة', description: 'تبادل قبلة فرنسية عميقة وعاطفية لمدة دقيقتين كاملتين.', category: 'vaginal', timer: 120 },
   { id: 'vag-011', title: 'الهمس المثير', description: 'الهمس في أذن الشريك بكلمات وعبارات مثيرة أثناء المداعبة.', category: 'vaginal', timer: 300 },
   { id: 'vag-012', title: 'لعبة الأدوار', description: 'تمثيل سيناريو مثير (مثل الطبيب والمريض) لمدة 15 دقيقة.', category: 'vaginal', timer: 900 },
@@ -82,7 +86,7 @@ export const initialActs: Act[] = [
   { id: 'anal-005', title: 'تحفيز البروستاتا', description: 'للذكور، يقوم الشريك بتحفيز البروستاتا بلطف باستخدام الإصبع.', category: 'anal', timer: 480 },
   { id: 'anal-006', title: 'الإيلاج الشرجي البطيء', description: 'إيلاج القضيب ببطء شديد في فتحة الشرج مع التركيز على التواصل.', category: 'anal', timer: 600 },
   { id: 'anal-007', title: 'تغيير العمق', description: 'أثناء الإيلاج الشرجي، تغيير عمق الإيلاج من سطحي إلى عميق.', category: 'anal', timer: 600 },
-  { id: 'anal-008', title: 'وضعية الملعقة للشرجي', description: 'تجربة الجنس الشرجي في وضعية الملعقة لراحة أكبر.', category: 'anal', timer: 900 },
+  { id: 'anal-008', title: 'وضعية الملعقة للشرجي', description: 'تجربة الجنس الشرجي في وضعية الملعقة لراحة أكبر.', category: 'anal', timer: 900, image: "https://placehold.co/600x400.png" },
   { id: 'anal-009', title: 'الجنس الفموي الشرجي (Anilingus)', description: 'يقوم أحد الشريكين بلعق فتحة شرج الآخر (مع مراعاة النظافة القصوى).', category: 'anal', timer: 300 },
   { id: 'anal-010', title: 'استخدام سدادة شرجية', description: 'ارتداء سدادة شرجية صغيرة أثناء ممارسة الجنس المهبلي لزيادة الإحساس.', category: 'anal' },
   { id: 'anal-011', title: 'القذف داخل الشرج', description: 'القذف داخل فتحة الشرج.', category: 'anal' },
@@ -96,12 +100,12 @@ export const initialActs: Act[] = [
   { id: 'tas-010', title: 'كوكتيل الحب', description: 'مزج السائل المنوي مع قليل من العصير أو مشروب آخر (للمغامرين فقط).', category: 'tasting' },
   { id: 'tas-011', title: 'القذف على الطعام', description: 'القذف على قطعة حلوى أو فاكهة ثم تناولها معًا.', category: 'tasting' },
   { id: 'tas-012', title: 'تحدي البلع', description: 'تحدي بلع كمية القذف كاملة.', category: 'tasting' },
-  { id: 'pos-004', title: 'وضعية الكرسي السحري', description: 'تجلس المرأة على حافة السرير أو الكرسي، ويقوم الرجل بالإيلاج من وضعية الوقوف أو الركوع.', category: 'position', timer: 600 },
-  { id: 'pos-005', title: 'وضعية الفراشة', description: 'تستلقي المرأة على ظهرها مع رفع ساقيها على كتفي الرجل، مما يسمح بإيلاج عميق.', category: 'position', timer: 600 },
-  { id: 'pos-006', title: 'وضعية عربة اليد', description: 'تمسك المرأة بساقي الرجل بينما هو في وضعية الدفع، وتقوم هي بالتحكم في الحركة.', category: 'position', timer: 480 },
-  { id: 'pos-007', title: 'الوقوف', description: 'تجربة أوضاع جماع مختلفة أثناء الوقوف، مثل الاستناد إلى الحائط.', category: "position", timer: 480 },
-  { id: 'pos-008', title: 'وضعية اللوتس', description: 'يجلس الرجل متربعًا وتجلس المرأة في حضنه متجهة إليه، مع تشابك الأرجل.', category: 'position', timer: 900 },
-  { id: 'pos-009', title: 'الاتحاد المقلوب', description: 'يستلقي الرجل على ظهره وتجلس المرأة فوقه ولكن بظهرها إليه.', category: 'position', timer: 600 },
+  { id: 'pos-004', title: 'وضعية الكرسي السحري', description: 'تجلس المرأة على حافة السرير أو الكرسي، ويقوم الرجل بالإيلاج من وضعية الوقوف أو الركوع.', category: 'position', timer: 600, image: "https://placehold.co/600x400.png" },
+  { id: 'pos-005', title: 'وضعية الفراشة', description: 'تستلقي المرأة على ظهرها مع رفع ساقيها على كتفي الرجل، مما يسمح بإيلاج عميق.', category: 'position', timer: 600, image: "https://placehold.co/600x400.png" },
+  { id: 'pos-006', title: 'وضعية عربة اليد', description: 'تمسك المرأة بساقي الرجل بينما هو في وضعية الدفع، وتقوم هي بالتحكم في الحركة.', category: 'position', timer: 480, image: "https://placehold.co/600x400.png" },
+  { id: 'pos-007', title: 'الوقوف', description: 'تجربة أوضاع جماع مختلفة أثناء الوقوف، مثل الاستناد إلى الحائط.', category: "position", timer: 480, image: "https://placehold.co/600x400.png" },
+  { id: 'pos-008', title: 'وضعية اللوتس', description: 'يجلس الرجل متربعًا وتجلس المرأة في حضنه متجهة إليه، مع تشابك الأرجل.', category: 'position', timer: 900, image: "https://placehold.co/600x400.png" },
+  { id: 'pos-009', title: 'الاتحاد المقلوب', description: 'يستلقي الرجل على ظهره وتجلس المرأة فوقه ولكن بظهرها إليه.', category: 'position', timer: 600, image: "https://placehold.co/600x400.png" },
   { id: 'pos-010', title: 'تغيير الأوضاع', description: 'تحدي تغيير وضعية الجماع كل دقيقتين.', category: 'position', timer: 600 },
   { id: 'pos-011', title: 'الجماع الصامت', description: 'محاولة ممارسة الجنس لدقائق دون إصدار أي صوت، والتركيز على لغة الجسد.', category: 'position', timer: 300 },
   { id: 'pos-012', title: 'السيطرة الكاملة', description: 'يأخذ أحد الشريكين السيطرة الكاملة على الحركة والسرعة لمدة 10 دقائق.', category: 'position', timer: 600 },
@@ -139,7 +143,8 @@ export const initialActs: Act[] = [
     title: 'وضعية الكلب مع رفع الحوض',
     description: 'وضعية الكلب التقليدية مع وضع وسادة تحت حوض المتلقي لتسهيل الإيلاج الشرجي.',
     category: 'anal',
-    timer: 600
+    timer: 600,
+    image: "https://placehold.co/600x400.png"
   },
   {
     id: 'anal-017',
@@ -252,30 +257,30 @@ export const initialActs: Act[] = [
   { id: "vag-025", title: "الإيلاج الدائري", description: "أثناء الإيلاج، حاول تحريك الوركين بحركة دائرية بطيئة لاستكشاف زوايا وأحاسيس جديدة.", category: "vaginal", timer: 300 },
   { id: "vag-026", title: "قبلة أثناء الذروة", description: "حاولا مزامنة النشوة مع قبلة فرنسية عميقة وطويلة.", category: "vaginal" },
   { id: "vag-027", title: "إيلاج ما بعد الاستحمام", description: "مارسا الجنس مباشرة بعد الاستحمام بينما لا تزال أجسادكما مبللة ودافئة.", category: "vaginal", timer: 600 },
-  { id: "vag-028", title: "تحدي الوقوف", description: "حاولا إيجاد طريقة لممارسة الإيلاج في وضعية الوقوف لمدة دقيقة واحدة على الأقل.", category: "position", timer: 180 },
+  { id: "vag-028", title: "تحدي الوقوف", description: "حاولا إيجاد طريقة لممارسة الإيلاج في وضعية الوقوف لمدة دقيقة واحدة على الأقل.", category: "position", timer: 180, image: "https://placehold.co/600x400.png" },
   { id: "vag-029", title: "مفاجأة الهزاز", description: "أثناء الإيلاج، يقوم أحد الشريكين بشكل مفاجئ باستخدام هزاز صغير لتحفيز بظر الشريكة.", category: "vaginal", timer: 480 },
   { id: "vag-030", title: "تحفيز الحلمة", description: "أثناء الإيلاج، يجب على أحد الشريكين التركيز بشكل كامل على مداعبة حلمتي الشريك الآخر.", category: "vaginal", timer: 300 },
-  { id: "vag-031", title: "الإيلاج على الأرض", description: "اتركا السرير وجربا ممارسة الجنس على سجادة ناعمة على الأرض.", category: "position", timer: 600 },
+  { id: "vag-031", title: "الإيلاج على الأرض", description: "اتركا السرير وجربا ممارسة الجنس على سجادة ناعمة على الأرض.", category: "position", timer: 600, image: "https://placehold.co/600x400.png" },
   { id: "vag-032", title: "العد للنشوة", description: "يبدأ أحد الشريكين بالعد بصوت عالٍ وبطء من 1 إلى 10، ويجب على الشريك الآخر محاولة الوصول للنشوة قبل انتهاء العد.", category: "vaginal", timer: 180 },
   { id: "anal-022", title: "التحكم بالإصبع", description: "أثناء الإيلاج الشرجي، يستخدم المتلقي أصابعه لتوجيه القضيب والتحكم في العمق والزاوية.", category: "anal", timer: 480 },
   { id: "anal-023", title: "التنفس المتزامن", description: "حاولا مزامنة تنفسكما (شهيق وزفير) أثناء الإيلاج الشرجي البطيء لزيادة الاتصال والاسترخاء.", category: "anal", timer: 600 },
   { id: "anal-024", title: "إيقاع النبض", description: "بعد الإيلاج، يقون الفاعل بعمل حركات نابضة صغيرة وعميقة بدلاً من الدفع الكامل، مع التركيز على تحفيز البروستاتا.", category: "anal", timer: 300 },
-  { id: "anal-025", title: "وسادة الدعم", description: "استخدام وسادة تحت حوض المتلقي في وضعية الاستلقاء على الظهر (وضعية المبشر) لتسهيل الإيلاج الشرجي.", category: "position", timer: 600 },
+  { id: "anal-025", title: "وسادة الدعم", description: "استخدام وسادة تحت حوض المتلقي في وضعية الاستلقاء على الظهر (وضعية المبشر) لتسهيل الإيلاج الشرجي.", category: "position", timer: 600, image: "https://placehold.co/600x400.png" },
   { id: "anal-026", title: "الاستراحة الدافئة", description: "أثناء الجنس الشرجي، توقفا عن الحركة تمامًا واتركا القضيب بالداخل للشعور بالدفء والامتلاء لبضع لحظات.", category: "anal", timer: 300 },
   { id: "anal-027", title: "هجوم مزدوج", description: "أثناء الإيلاج الشرجي، يقوم الفاعل بمداعبة بظر الشريكة (إذا كانت أنثى) أو قضيب الشريك (إذا كان ذكرًا) للوصول إلى نشوة مزدوجة.", category: "anal", timer: 600 },
   { id: "anal-028", title: "كلمة الأمان", description: "اتفقا على كلمة أمان واضحة. يجب على الفاعل أن يتوقف فورًا عند سماعها. الهدف هو بناء الثقة المطلقة.", category: "anal" },
-  { id: "anal-029", title: "الشرجي على الكرسي", description: "يجلس المتلقي على كرسي بشكل عكسي (وجهه للظهر)، ويقوم الفاعل بالإيلاج من الخلف.", category: "position", timer: 600 },
+  { id: "anal-029", title: "الشرجي على الكرسي", description: "يجلس المتلقي على كرسي بشكل عكسي (وجهه للظهر)، ويقوم الفاعل بالإيلاج من الخلف.", category: "position", timer: 600, image: "https://placehold.co/600x400.png" },
   { id: "anal-030", title: "التدليك بعد الإيلاج", description: "بعد سحب القضيب، يقوم الفاعل بتدليك لطيف للمنطقة الشرجية باستخدام زيت دافئ.", category: "anal", timer: 180 },
   { id: "anal-031", title: "تجربة المزلقات", description: "جربا أنواعًا مختلفة من المزلقات (مائي، سيليكون، دافئ، بارد) لمعرفة أيهما تفضلان للجنس الشرجي.", category: "anal" },
-  { id: "pos-014", title: "وضعية المقص", description: "يستلقي الشريكان على جانبيهما متواجهين، ويلف كل منهما ساقه العليا فوق ساق الآخر. تسمح بتحكم جيد وعمق متوسط.", category: "position", timer: 600 },
-  { id: "pos-015", title: "وضعية الجسر", description: "تستلقي المرأة على ظهرها وترفع حوضها للأعلى (كدعامة)، بينما يركع الرجل للإيلاج من الأمام.", category: "position", timer: 480 },
-  { id: "pos-016", title: "احتضان عكسي", description: "تجلس المرأة على الرجل وهو جالس، ولكن وجهها للأمام (في نفس اتجاهه)، مما يسمح له بمداعبة ظهرها ومؤخرتها.", category: "position", timer: 900 },
-  { id: "pos-017", title: "وضعية X", description: "يستلقي الرجل على ظهره، وتستلقي المرأة فوقه ولكن بشكل متعامد (يشكلان حرف X)، وتلف ساقيها حول خصره.", category: "position", timer: 600 },
-  { id: "pos-018", title: "من الحافة", description: "تستلقي المرأة على بطنها على حافة السرير مع تدلي ساقيها، ويقوم الرجل بالإيلاج من الخلف وهو واقف.", category: "position", timer: 600 },
+  { id: "pos-014", title: "وضعية المقص", description: "يستلقي الشريكان على جانبيهما متواجهين، ويلف كل منهما ساقه العليا فوق ساق الآخر. تسمح بتحكم جيد وعمق متوسط.", category: "position", timer: 600, image: "https://placehold.co/600x400.png" },
+  { id: "pos-015", title: "وضعية الجسر", description: "تستلقي المرأة على ظهرها وترفع حوضها للأعلى (كدعامة)، بينما يركع الرجل للإيلاج من الأمام.", category: "position", timer: 480, image: "https://placehold.co/600x400.png" },
+  { id: "pos-016", title: "احتضان عكسي", description: "تجلس المرأة على الرجل وهو جالس، ولكن وجهها للأمام (في نفس اتجاهه)، مما يسمح له بمداعبة ظهرها ومؤخرتها.", category: "position", timer: 900, image: "https://placehold.co/600x400.png" },
+  { id: "pos-017", title: "وضعية X", description: "يستلقي الرجل على ظهره، وتستلقي المرأة فوقه ولكن بشكل متعامد (يشكلان حرف X)، وتلف ساقيها حول خصره.", category: "position", timer: 600, image: "https://placehold.co/600x400.png" },
+  { id: "pos-018", title: "من الحافة", description: "تستلقي المرأة على بطنها على حافة السرير مع تدلي ساقيها، ويقوم الرجل بالإيلاج من الخلف وهو واقف.", category: "position", timer: 600, image: "https://placehold.co/600x400.png" },
   { id: "pos-019", title: "تحدي الأثاث", description: "حاولا ممارسة الجنس باستخدام قطعة أثاث غير السرير (أريكة، كرسي، طاولة قوية).", category: "position" },
   { id: "pos-020", title: "القائد الأعمى", description: "يعصب أحد الشريكين عينيه، ويقوم الشريك الآخر بتوجيهه لوضعيات مختلفة دون كلام، فقط باللمس.", category: "position", timer: 900 },
-  { id: "pos-021", title: "وضعية الاستسلام", description: "تستلقي المرأة على ظهرها وتفتح ساقيها على أوسع نطاق ممكن، وذراعاها فوق رأسها، في وضع استسلام كامل.", category: "position", timer: 480 },
-  { id: "pos-022", title: "الرقصة البطيئة", description: "في وضعية الوقوف، يتعانق الشريكان ويمارسان الجنس بحركة تمايل بطيئة كأنهما في رقصة.", category: "position", timer: 300 },
+  { id: "pos-021", title: "وضعية الاستسلام", description: "تستلقي المرأة على ظهرها وتفتح ساقيها على أوسع نطاق ممكن، وذراعاها فوق رأسها، في وضع استسلام كامل.", category: "position", timer: 480, image: "https://placehold.co/600x400.png" },
+  { id: "pos-022", title: "الرقصة البطيئة", description: "في وضعية الوقوف، يتعانق الشريكان ويمارسان الجنس بحركة تمايل بطيئة كأنهما في رقصة.", category: "position", timer: 300, image: "https://placehold.co/600x400.png" },
   { id: "pos-023", title: "إعادة تمثيل", description: "حاولا إعادة تمثيل أول وضعية مارستما بها الجنس معًا.", category: "position" },
   // Tasting (50)
   { id: "tas-023", title: "لوحة التذوق", description: "يقذف الرجل على سطح نظيف ومستوٍ (مثل طبق زجاجي)، ثم تقوم الشريكة بتذوقه بأشكال مختلفة (لعق، غمس الإصبع، الخ).", category: "tasting" },

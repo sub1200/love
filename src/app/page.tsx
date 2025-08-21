@@ -5,6 +5,7 @@ import { BrainCircuit, Dices, Edit, Heart, Library, Plus, Sparkles, TimerIcon } 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -70,6 +71,17 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
 
   return (
     <div className="space-y-4">
+       {challenge.image && (
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+          <Image
+            src={challenge.image}
+            alt={challenge.title}
+            fill
+            className="object-cover"
+            data-ai-hint="couple position"
+          />
+        </div>
+      )}
       <DialogHeader>
         <DialogTitle className="text-2xl font-headline flex items-center gap-2">
           <Sparkles className="text-primary w-6 h-6" />
@@ -237,6 +249,17 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
            <Card
             className="w-full max-w-sm flex flex-col hover:shadow-primary/20 hover:shadow-lg transition-shadow duration-300"
           >
+            {revealedChallenge.image && (
+              <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
+                 <Image
+                    src={revealedChallenge.image}
+                    alt={revealedChallenge.title}
+                    fill
+                    className="object-cover"
+                    data-ai-hint="couple position"
+                  />
+              </div>
+            )}
             <CardHeader>
               <CardTitle className="font-headline text-xl">{revealedChallenge.title}</CardTitle>
             </CardHeader>
