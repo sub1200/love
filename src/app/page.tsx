@@ -156,20 +156,27 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
   const { toast } = useToast();
   
   const handleRevealClick = () => {
-    const filteredActs = acts.filter(
+    let availableActs = acts.filter(
       (act) => filter === "all" || act.category === filter
     );
-    if (filteredActs.length > 0) {
-      const randomIndex = Math.floor(Math.random() * filteredActs.length);
-      setRevealedChallenge(filteredActs[randomIndex]);
-    } else {
+
+    if (availableActs.length === 0) {
       setRevealedChallenge(null);
       toast({
         variant: "destructive",
         title: "لا توجد تحديات",
         description: "لا توجد تحديات متاحة في هذه الفئة.",
       });
+      return;
     }
+
+    if (revealedChallenge && availableActs.length > 1) {
+      // Filter out the current challenge to avoid repetition
+      availableActs = availableActs.filter(act => act.id !== revealedChallenge.id);
+    }
+    
+    const randomIndex = Math.floor(Math.random() * availableActs.length);
+    setRevealedChallenge(availableActs[randomIndex]);
   };
 
   React.useEffect(() => {
@@ -712,5 +719,3 @@ export default function Home() {
     </main>
   );
 }
-
-    
