@@ -104,8 +104,6 @@ export const initialActs: Act[] = [
   { id: 'pos-005', title: 'وضعية الفراشة', description: 'تستلقي المرأة على ظهرها مع رفع ساقيها على كتفي الرجل، مما يسمح بإيلاج عميق.', category: 'position', timer: 600, image: "https://picsum.photos/seed/pos-005/600/400" },
   { id: 'pos-006', title: 'وضعية عربة اليد', description: 'يمسك الرجل بساقي المرأة بينما هي في وضعية الدفع، وتقوم هي بالتحكم في الحركة.', category: 'position', timer: 480, image: "https://picsum.photos/seed/pos-006/600/400" },
   { id: 'pos-007', title: 'الوقوف', description: 'تجربة أوضاع جماع مختلفة أثناء الوقوف، مثل الاستناد إلى الحائط.', category: "position", timer: 480, image: "https://picsum.photos/seed/pos-007/600/400" },
-  { id: 'pos-008', title: 'وضعية اللوتس', description: 'يجلس الرجل متربعًا وتجلس المرأة في حضنه متجهة إليه، مع تشابك الأرجل.', category: 'position', timer: 900, image: "https://picsum.photos/seed/pos-008/600/400" },
-  { id: 'pos-009', title: 'الاتحاد المقلوب', description: 'يستلقي الرجل على ظهره وتجلس المرأة فوقه ولكن بظهرها إليه.', category: 'position', timer: 600, image: "https://picsum.photos/seed/pos-009/600/400" },
   { id: 'pos-010', title: 'تغيير الأوضاع', description: 'تحدي تغيير وضعية الجماع كل دقيقتين.', category: 'position', timer: 600, image: "https://picsum.photos/seed/pos-010/600/400" },
   { id: 'pos-011', title: 'الجماع الصامت', description: 'محاولة ممارسة الجنس لدقائق دون إصدار أي صوت، والتركيز على لغة الجسد.', category: 'position', timer: 300, image: "https://picsum.photos/seed/pos-011/600/400" },
   { id: 'pos-012', title: 'السيطرة الكاملة', description: 'يأخذ أحد الشريكين السيطرة الكاملة على الحركة والسرعة لمدة 10 دقائق.', category: 'position', timer: 600, image: "https://picsum.photos/seed/pos-012/600/400" },
@@ -441,5 +439,17 @@ export const initialActs: Act[] = [
     title: 'العرش المتبادل',
     description: 'تجلس المرأة على وجه الرجل وهي ترتدي السدادة الشرجية. مهمته إزالتها بفمه وتذوقها. بعد ذلك، يأتي دورها لتجلس على وجهه وتجعله يتذوق إفرازاتها، في تبادل للسيطرة والمتعة.',
     category: 'anal',
-  }
+  },
+  { id: 'tas-201', title: 'تذوق ما بعد الإيلاج (للمرأة)', description: 'بعد انتهاء الإيلاج المهبلي، تقوم المرأة بلعق وتنظيف قضيب الرجل بفمها، متذوقة مزيج سوائلهما.', category: 'tasting' },
+  { id: 'tas-202', title: 'تذوق ما بعد الإيلاج (للرجل)', description: 'بعد الإيلاج المهبلي، يستخدم الرجل أصابعه لأخذ عينة من المزيج داخل مهبل المرأة ويتذوقها.', category: 'tasting' },
+  { id: 'tas-203', title: 'قبلة ما بعد الإيلاج', description: 'بعد الإيلاج المهبلي مباشرة وقبل التنظيف، يتبادل الشريكان قبلة فرنسية عميقة لمشاركة نكهة اللحظة.', category: 'tasting' },
+  { id: 'tas-204', title: 'النكهة الداخلية', description: 'أثناء الإيلاج، ينسحب الرجل ويقوم بلعق ومداعبة مهبل المرأة، متذوقًا إفرازاتها الطبيعية الممزوجة بالمداعبة.', category: 'tasting' },
+  { id: 'tas-205', title: 'تذوق أصابعها', description: 'بعد أن تقوم المرأة بمداعبة نفسها والوصول للنشوة، يقوم الرجل بلعق أصابعها وتذوق إفرازاتها.', category: 'tasting' },
+  { id: 'tas-206', title: 'الرسم بالسوائل', description: 'بعد الإيلاج، تستخدم المرأة أصابعها المبللة بالسوائل المختلطة للرسم على صدر الرجل أو بطنه، ثم يقوم هو بلعقها.', category: 'tasting' },
+  { id: 'tas-207', title: 'مشاركة الكأس', description: 'بعد أن يقذف الرجل في كوب صغير، تضيف المرأة القليل من إفرازاتها إليه، ثم يشربان المزيج معًا.', category: 'tasting' },
+  { id: 'tas-208', title: 'قبلة القذف', description: 'أثناء الإيلاج المهبلي، وعندما يكون الرجل على وشك القذف، ينسحب ويقذف في فمه، ثم يشاركها السائل عبر قبلة.', category: 'tasting' },
+  { id: 'tas-209', title: 'من الأمام إلى الخلف', description: 'بعد الإيلاج المهبلي، وبدون تنظيف، ينتقل الرجل لممارسة الجنس الفموي الشرجي للمرأة (Anilingus)، ناقلاً النكهات.', category: 'tasting' },
+  { id: 'tas-210', title: 'نكهة القمة', description: 'عندما تصل المرأة إلى النشوة أثناء الإيلاج، يجب على الرجل سحب قضيبه بسرعة ولعق الإفرازات الطازجة من على رأسه.', category: 'tasting' }
 ];
+
+    
