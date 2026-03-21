@@ -42,7 +42,6 @@ export async function generatePersonalizedChallenge(
 
 const prompt = ai.definePrompt({
   name: 'generatePersonalizedChallengePrompt',
-  model: 'googleai/gemini-pro',
   input: {schema: GeneratePersonalizedChallengeInputSchema},
   output: {schema: GeneratePersonalizedChallengeOutputSchema},
   prompt: `You are an AI assistant designed to create personalized erotic challenges for couples.
