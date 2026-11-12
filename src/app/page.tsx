@@ -2,7 +2,18 @@
 "use client";
 
 import * as React from "react";
-import { BrainCircuit, Dices, Edit, Heart, Library, Plus, Sparkles, TimerIcon, Image as ImageIcon } from "lucide-react";
+import { 
+  BrainCircuit, 
+  Dices, 
+  Edit, 
+  Heart, 
+  Library, 
+  Plus, 
+  Sparkles, 
+  TimerIcon, 
+  Image as ImageIcon,
+  Languages 
+} from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,10 +55,129 @@ import { useToast } from "@/hooks/use-toast";
 import { generatePersonalizedChallenge } from "@/ai/flows/generate-personalized-challenge";
 import { Skeleton } from "@/components/ui/skeleton";
 
+type Lang = "ar" | "en";
 
-const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
+const translations = {
+  ar: {
+    title: "Habibi's Heat",
+    subtitle: "لعبة الحب الخاص بكم",
+    tabs: {
+      library: "مكتبة الأفعال",
+      random: "تحدي عشوائي",
+      generator: "مولد التحديات",
+    },
+    categories: {
+      all: "الكل",
+      vaginal: "مهبلي",
+      anal: "شرجي",
+      tasting: "تذوق",
+      position: "أوضاع",
+    },
+    buttons: {
+      addCustom: "أضف أمراً مخصصاً",
+      reveal: "اكشف عن تحدٍ",
+      start: "ابدأ",
+      edit: "تعديل",
+      another: "كشف تحدي آخر",
+      spin: "دور!",
+      generate: "أنشئ تحديًا شخصيًا",
+      generating: "جاري الإنشاء...",
+      close: "إغلاق",
+      reset: "إعادة ضبط",
+      pause: "إيقاف مؤقت",
+      save: "حفظ التغييرات",
+      add: "إضافة",
+      cancel: "إلغاء",
+    },
+    placeholders: {
+      pastInteractions: "مثال: نستمتع بالأوضاع الجديدة ولكننا نفضل الإيلاج اللطيف...",
+      preferences: "مثال: نرغب في تجربة شيء أكثر جرأة...",
+      customTitle: "مثال: قبلة فرنسية لمدة 5 دقائق",
+      customDesc: "صف التحدي بالتفصيل...",
+    },
+    labels: {
+      timer: "مؤقت التحدي",
+      pastInteractions: "التفاعلات السابقة",
+      preferences: "التفضيلات الحالية",
+      title: "العنوان",
+      desc: "الوصف",
+      image: "صورة (اختياري)",
+      category: "الفئة",
+    },
+    messages: {
+      noChallenges: "لا توجد تحديات متاحة في هذه الفئة.",
+      successAdd: "تمت إضافة الأمر المخصص بنجاح.",
+      successEdit: "تم تعديل الأمر بنجاح.",
+      aiTitle: "تحدي مولد بالذكاء الاصطناعي",
+      aiSuggested: "التحدي المقترح لكما!",
+      libraryWelcome: "هل أنت مستعد لتحدي جديد؟ اضغط على الزر أدناه للكشف عن تحدٍ.",
+      randomWelcome: "هل أنت مستعد للمفاجأة؟ اضغط على الزر أدناه لاختيار تحدي عشوائي!",
+      aiWelcome: "احصل على تحديات مخصصة تمامًا لكما بناءً على تفضيلاتكما.",
+    }
+  },
+  en: {
+    title: "Habibi's Heat",
+    subtitle: "Your Personal Love Game",
+    tabs: {
+      library: "Acts Library",
+      random: "Random Challenge",
+      generator: "Challenge Generator",
+    },
+    categories: {
+      all: "All",
+      vaginal: "Vaginal",
+      anal: "Anal",
+      tasting: "Tasting",
+      position: "Positions",
+    },
+    buttons: {
+      addCustom: "Add Custom Act",
+      reveal: "Reveal a Challenge",
+      start: "Start",
+      edit: "Edit",
+      another: "Reveal Another",
+      spin: "Spin!",
+      generate: "Generate Personalized Challenge",
+      generating: "Generating...",
+      close: "Close",
+      reset: "Reset",
+      pause: "Pause",
+      save: "Save Changes",
+      add: "Add",
+      cancel: "Cancel",
+    },
+    placeholders: {
+      pastInteractions: "Example: We enjoy new positions but prefer gentle moves...",
+      preferences: "Example: We want to try something bolder...",
+      customTitle: "Example: 5-minute French kiss",
+      customDesc: "Describe the challenge in detail...",
+    },
+    labels: {
+      timer: "Challenge Timer",
+      pastInteractions: "Past Interactions",
+      preferences: "Current Preferences",
+      title: "Title",
+      desc: "Description",
+      image: "Image (Optional)",
+      category: "Category",
+    },
+    messages: {
+      noChallenges: "No challenges available in this category.",
+      successAdd: "Custom act added successfully.",
+      successEdit: "Act updated successfully.",
+      aiTitle: "AI Generated Challenge",
+      aiSuggested: "Your Suggested Challenge!",
+      libraryWelcome: "Ready for a new challenge? Click the button below to reveal one.",
+      randomWelcome: "Ready for a surprise? Click below to pick a random challenge!",
+      aiWelcome: "Get challenges tailored exactly to your preferences.",
+    }
+  }
+};
+
+const ChallengeView = ({ challenge, lang }: { challenge: Act | null, lang: Lang }) => {
   const [timeLeft, setTimeLeft] = React.useState(10 * 60);
   const [isTimerActive, setIsTimerActive] = React.useState(false);
+  const t = translations[lang];
 
   React.useEffect(() => {
     if (!challenge) return;
@@ -56,12 +186,8 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
   }, [challenge]);
 
   React.useEffect(() => {
-    if (!isTimerActive || timeLeft <= 0) {
-      return;
-    }
-    const intervalId = setInterval(() => {
-      setTimeLeft((t) => t - 1);
-    }, 1000);
+    if (!isTimerActive || timeLeft <= 0) return;
+    const intervalId = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(intervalId);
   }, [isTimerActive, timeLeft]);
 
@@ -76,7 +202,7 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
         <div className="relative aspect-video w-full overflow-hidden rounded-lg">
           <Image
             src={challenge.image}
-            alt={challenge.title}
+            alt={lang === 'ar' ? challenge.titleAr : challenge.titleEn}
             fill
             className="object-cover"
             data-ai-hint="couple position"
@@ -90,14 +216,16 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
       <DialogHeader>
         <DialogTitle className="text-2xl font-headline flex items-center gap-2">
           <Sparkles className="text-primary w-6 h-6" />
-          {challenge.title}
+          {lang === 'ar' ? challenge.titleAr : challenge.titleEn}
         </DialogTitle>
-        <DialogDescription>{challenge.description}</DialogDescription>
+        <DialogDescription>
+          {lang === 'ar' ? challenge.descriptionAr : challenge.descriptionEn}
+        </DialogDescription>
       </DialogHeader>
       <div className="border-t border-dashed pt-4">
         <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
           <TimerIcon className="text-primary w-5 h-5" />
-          مؤقت التحدي
+          {t.labels.timer}
         </h3>
         <div className="flex items-center justify-center gap-4 bg-muted/50 p-4 rounded-lg">
           <div className="text-5xl font-mono font-bold text-primary tracking-widest">
@@ -110,7 +238,7 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
               disabled={timeLeft <= 0}
               variant={isTimerActive ? "secondary" : "default"}
             >
-              {isTimerActive ? "إيقاف مؤقت" : "ابدأ"}
+              {isTimerActive ? t.buttons.pause : t.buttons.start}
             </Button>
             <Button
               onClick={() => {
@@ -119,34 +247,46 @@ const ChallengeView = ({ challenge }: { challenge: Act | null }) => {
               }}
               variant="outline"
             >
-              إعادة ضبط
+              {t.buttons.reset}
             </Button>
           </div>
         </div>
       </div>
       <DialogFooter>
         <DialogClose asChild>
-          <Button variant="outline">إغلاق</Button>
+          <Button variant="outline">{t.buttons.close}</Button>
         </DialogClose>
       </DialogFooter>
     </div>
   );
 };
 
-
-const addActFormSchema = z.object({
-  title: z.string().min(3, { message: "يجب أن يكون العنوان 3 أحرف على الأقل." }),
-  description: z.string().min(10, { message: "يجب أن يكون الوصف 10 أحرف على الأقل." }),
-  category: z.enum(["vaginal", "anal", "tasting", "position"]),
-  image: z.string().optional(),
-});
-
-const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Act[], onSelectChallenge: (act: Act) => void, onAddAct: (act: Act) => void, onEditAct: (act: Act) => void }) => {
+const ActLibrary = ({ 
+  acts, 
+  onSelectChallenge, 
+  onAddAct, 
+  onEditAct, 
+  lang 
+}: { 
+  acts: Act[], 
+  onSelectChallenge: (act: Act) => void, 
+  onAddAct: (act: Act) => void, 
+  onEditAct: (act: Act) => void,
+  lang: Lang
+}) => {
   const [filter, setFilter] = React.useState<ActCategory | "all">("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = React.useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
   const [editingAct, setEditingAct] = React.useState<Act | null>(null);
   const [revealedChallenge, setRevealedChallenge] = React.useState<Act | null>(null);
+  const t = translations[lang];
+
+  const addActFormSchema = z.object({
+    title: z.string().min(3),
+    description: z.string().min(10),
+    category: z.enum(["vaginal", "anal", "tasting", "position"]),
+    image: z.string().optional(),
+  });
 
   const form = useForm<z.infer<typeof addActFormSchema>>({
     resolver: zodResolver(addActFormSchema),
@@ -164,14 +304,12 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
       setRevealedChallenge(null);
       toast({
         variant: "destructive",
-        title: "لا توجد تحديات",
-        description: "لا توجد تحديات متاحة في هذه الفئة.",
+        title: t.messages.noChallenges,
       });
       return;
     }
 
     if (revealedChallenge && availableActs.length > 1) {
-      // Filter out the current challenge to avoid repetition
       availableActs = availableActs.filter(act => act.id !== revealedChallenge.id);
     }
     
@@ -187,13 +325,15 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
   const handleAddSubmit = (values: z.infer<typeof addActFormSchema>) => {
     onAddAct({
       id: `custom-${Date.now()}`,
-      ...values,
+      titleAr: values.title,
+      titleEn: values.title,
+      descriptionAr: values.description,
+      descriptionEn: values.description,
+      category: values.category,
       timer: 600,
+      image: values.image,
     });
-    toast({
-      title: "نجاح!",
-      description: "تمت إضافة الأمر المخصص بنجاح.",
-    });
+    toast({ title: t.messages.successAdd });
     setIsAddDialogOpen(false);
     form.reset();
   };
@@ -202,14 +342,15 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
     if (editingAct) {
       const updatedAct = {
         ...editingAct,
-        ...values,
+        titleAr: lang === 'ar' ? values.title : editingAct.titleAr,
+        titleEn: lang === 'en' ? values.title : editingAct.titleEn,
+        descriptionAr: lang === 'ar' ? values.description : editingAct.descriptionAr,
+        descriptionEn: lang === 'en' ? values.description : editingAct.descriptionEn,
+        category: values.category,
+        image: values.image || editingAct.image,
       };
       onEditAct(updatedAct);
-      toast({
-        title: "نجاح!",
-        description: "تم تعديل الأمر بنجاح.",
-      });
-      // Also update the currently revealed challenge if it's the one being edited
+      toast({ title: t.messages.successEdit });
       if (revealedChallenge && revealedChallenge.id === editingAct.id) {
         setRevealedChallenge(updatedAct);
       }
@@ -222,8 +363,8 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
   const openEditDialog = (act: Act) => {
     setEditingAct(act);
     form.reset({
-        title: act.title,
-        description: act.description,
+        title: lang === 'ar' ? act.titleAr : act.titleEn,
+        description: lang === 'ar' ? act.descriptionAr : act.descriptionEn,
         category: act.category,
         image: act.image || "",
     });
@@ -234,20 +375,17 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        fieldChange(reader.result as string);
-      };
+      reader.onloadend = () => fieldChange(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
 
-
   const categories: { key: ActCategory | "all"; name: string, icon: React.ElementType }[] = [
-    { key: "all", name: "الكل", icon: Library },
-    { key: "vaginal", name: "مهبلي", icon: Heart },
-    { key: "anal", name: "شرجي", icon: Heart },
-    { key: "tasting", name: "تذوق", icon: Sparkles },
-    { key: "position", name: "أوضاع", icon: Dices },
+    { key: "all", name: t.categories.all, icon: Library },
+    { key: "vaginal", name: t.categories.vaginal, icon: Heart },
+    { key: "anal", name: t.categories.anal, icon: Heart },
+    { key: "tasting", name: t.categories.tasting, icon: Sparkles },
+    { key: "position", name: t.categories.position, icon: Dices },
   ];
 
   return (
@@ -260,13 +398,13 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
             onClick={() => setFilter(cat.key)}
             className="capitalize"
           >
-            <cat.icon className="mr-2 h-4 w-4" />
+            <cat.icon className={cn(lang === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
             {cat.name}
           </Button>
         ))}
         <Button variant="secondary" onClick={() => setIsAddDialogOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          أضف أمراً مخصصاً
+          <Plus className={cn(lang === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+          {t.buttons.addCustom}
         </Button>
       </div>
 
@@ -279,7 +417,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
               <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
                  <Image
                     src={revealedChallenge.image}
-                    alt={revealedChallenge.title}
+                    alt={lang === 'ar' ? revealedChallenge.titleAr : revealedChallenge.titleEn}
                     fill
                     className="object-cover"
                     data-ai-hint="couple position"
@@ -291,50 +429,50 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 </div>
             )}
             <CardHeader>
-              <CardTitle className="font-headline text-xl">{revealedChallenge.title}</CardTitle>
+              <CardTitle className="font-headline text-xl">
+                {lang === 'ar' ? revealedChallenge.titleAr : revealedChallenge.titleEn}
+              </CardTitle>
             </CardHeader>
             <CardContent className="flex-grow">
               <CardDescription className="line-clamp-3">
-                {revealedChallenge.description}
+                {lang === 'ar' ? revealedChallenge.descriptionAr : revealedChallenge.descriptionEn}
               </CardDescription>
             </CardContent>
             <CardFooter className="grid grid-cols-2 gap-2">
               <Button className="w-full" onClick={() => onSelectChallenge(revealedChallenge)}>
-                <Sparkles className="mr-2 h-4 w-4" />
-                ابدأ
+                <Sparkles className={cn(lang === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+                {t.buttons.start}
               </Button>
                <Button className="w-full" variant="secondary" onClick={() => openEditDialog(revealedChallenge)}>
-                <Edit className="mr-2 h-4 w-4" />
-                تعديل
+                <Edit className={cn(lang === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+                {t.buttons.edit}
               </Button>
               <Button className="w-full col-span-2" variant="outline" onClick={handleRevealClick}>
-                <Dices className="mr-2 h-4 w-4" />
-                كشف تحدي آخر
+                <Dices className={cn(lang === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+                {t.buttons.another}
               </Button>
             </CardFooter>
           </Card>
         ) : (
           <>
             <Library className="h-20 w-20 text-primary animate-pulse" />
-            <h2 className="mt-4 text-3xl font-headline font-bold">مكتبة الأفعال</h2>
+            <h2 className="mt-4 text-3xl font-headline font-bold">{t.tabs.library}</h2>
             <p className="mt-2 max-w-md text-muted-foreground">
-              هل أنت مستعد لتحدي جديد؟ اضغط على الزر أدناه للكشف عن تحدٍ من الفئة المحددة.
+              {t.messages.libraryWelcome}
             </p>
              <Button size="lg" className="mt-8 text-lg" onClick={handleRevealClick}>
-                <Sparkles className="mr-3 h-6 w-6" />
-                اكشف عن تحدٍ
+                <Sparkles className={cn(lang === 'ar' ? "ml-3" : "mr-3", "h-6 w-6")} />
+                {t.buttons.reveal}
             </Button>
           </>
         )}
       </div>
 
+      {/* Add Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>أضف أمراً مخصصاً</DialogTitle>
-            <DialogDescription>
-              أضف تحديًا جديدًا إلى مكتبتك الشخصية.
-            </DialogDescription>
+            <DialogTitle>{t.buttons.addCustom}</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleAddSubmit)} className="space-y-4">
@@ -343,9 +481,9 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان</FormLabel>
+                    <FormLabel>{t.labels.title}</FormLabel>
                     <FormControl>
-                      <Input placeholder="مثال: قبلة فرنسية لمدة 5 دقائق" {...field} />
+                      <Input placeholder={t.placeholders.customTitle} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -356,9 +494,9 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الوصف</FormLabel>
+                    <FormLabel>{t.labels.desc}</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="صف التحدي بالتفصيل..." {...field} />
+                      <Textarea placeholder={t.placeholders.customDesc} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -369,7 +507,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>صورة (اختياري)</FormLabel>
+                    <FormLabel>{t.labels.image}</FormLabel>
                     <FormControl>
                       <Input 
                         type="file" 
@@ -377,9 +515,6 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                         onChange={(e) => handleFileChange(e, field.onChange)} 
                       />
                     </FormControl>
-                    <FormDescription>
-                      أضف صورة من جهازك لتوضيح الوضعية.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -389,8 +524,8 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="category"
                 render={({ field }) => (
                    <FormItem>
-                    <FormLabel>الفئة</FormLabel>
-                     <select {...field} className={cn("flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50")}>
+                    <FormLabel>{t.labels.category}</FormLabel>
+                     <select {...field} className={cn("flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2")}>
                       {categories.filter(c => c.key !== 'all').map(c => (
                         <option key={c.key} value={c.key}>{c.name}</option>
                       ))}
@@ -400,9 +535,9 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 )}
               />
               <DialogFooter>
-                <Button type="submit">إضافة</Button>
+                <Button type="submit">{t.buttons.add}</Button>
                  <DialogClose asChild>
-                    <Button type="button" variant="secondary">إلغاء</Button>
+                    <Button type="button" variant="secondary">{t.buttons.cancel}</Button>
                  </DialogClose>
               </DialogFooter>
             </form>
@@ -410,13 +545,11 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
         </DialogContent>
       </Dialog>
       
+      {/* Edit Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>تعديل الأمر</DialogTitle>
-            <DialogDescription>
-              قم بتعديل تفاصيل هذا التحدي.
-            </DialogDescription>
+            <DialogTitle>{t.buttons.edit}</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleEditSubmit)} className="space-y-4">
@@ -425,7 +558,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>العنوان</FormLabel>
+                    <FormLabel>{t.labels.title}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -438,7 +571,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>الوصف</FormLabel>
+                    <FormLabel>{t.labels.desc}</FormLabel>
                     <FormControl>
                       <Textarea {...field} />
                     </FormControl>
@@ -451,7 +584,7 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>صورة (اختياري)</FormLabel>
+                    <FormLabel>{t.labels.image}</FormLabel>
                     <FormControl>
                        <Input 
                         type="file" 
@@ -459,9 +592,6 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                         onChange={(e) => handleFileChange(e, field.onChange)} 
                       />
                     </FormControl>
-                     <FormDescription>
-                      أضف صورة جديدة من جهازك لتغيير الصورة الحالية.
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -471,8 +601,8 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 name="category"
                 render={({ field }) => (
                    <FormItem>
-                    <FormLabel>الفئة</FormLabel>
-                     <select {...field} className={cn("flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50")}>
+                    <FormLabel>{t.labels.category}</FormLabel>
+                     <select {...field} className={cn("flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2")}>
                       {categories.filter(c => c.key !== 'all').map(c => (
                         <option key={c.key} value={c.key}>{c.name}</option>
                       ))}
@@ -482,57 +612,52 @@ const ActLibrary = ({ acts, onSelectChallenge, onAddAct, onEditAct }: { acts: Ac
                 )}
               />
               <DialogFooter>
-                <Button type="submit">حفظ التغييرات</Button>
+                <Button type="submit">{t.buttons.save}</Button>
                  <DialogClose asChild>
-                    <Button type="button" variant="secondary" onClick={() => setEditingAct(null)}>إلغاء</Button>
+                    <Button type="button" variant="secondary">{t.buttons.cancel}</Button>
                  </DialogClose>
               </DialogFooter>
             </form>
           </Form>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };
 
-
-const RandomChallenge = ({ acts, onSelectChallenge }: { acts: Act[], onSelectChallenge: (act: Act) => void }) => {
-    
+const RandomChallenge = ({ acts, onSelectChallenge, lang }: { acts: Act[], onSelectChallenge: (act: Act) => void, lang: Lang }) => {
+  const t = translations[lang];
   const handleSpin = () => {
-    if (acts.length === 0) {
-        // Handle case where there are no acts
-        return;
-    }
+    if (acts.length === 0) return;
     const randomIndex = Math.floor(Math.random() * acts.length);
-    const randomAct = acts[randomIndex];
-    onSelectChallenge(randomAct);
+    onSelectChallenge(acts[randomIndex]);
   };
 
   return (
     <div className="flex flex-col items-center justify-center text-center py-16 px-4 bg-card rounded-xl shadow-lg">
         <Dices className="h-20 w-20 text-primary animate-pulse" />
-        <h2 className="mt-4 text-3xl font-headline font-bold">تحدي عشوائي</h2>
+        <h2 className="mt-4 text-3xl font-headline font-bold">{t.tabs.random}</h2>
         <p className="mt-2 max-w-md text-muted-foreground">
-            هل أنت مستعد للمفاجأة؟ اضغط على الزر أدناه لاختيار تحدي عشوائي وإضفاء بعض الإثارة!
+            {t.messages.randomWelcome}
         </p>
         <Button size="lg" className="mt-8 text-lg" onClick={handleSpin}>
-            <Sparkles className="mr-3 h-6 w-6" />
-            دور!
+            <Sparkles className={cn(lang === 'ar' ? "ml-3" : "mr-3", "h-6 w-6")} />
+            {t.buttons.spin}
         </Button>
     </div>
   )
 }
 
-const aiFormSchema = z.object({
-  pastInteractions: z.string().min(10, { message: "يرجى وصف التفاعلات السابقة بمزيد من التفصيل." }),
-  preferences: z.string().min(10, { message: "يرجى وصف تفضيلاتك بمزيد من التفصيل." }),
-});
-
-const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: Act) => void}) => {
+const AiChallengeGenerator = ({ onSelectChallenge, lang }: { onSelectChallenge: (act: Act) => void, lang: Lang }) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [generatedChallenge, setGeneratedChallenge] = React.useState<string | null>(null);
   const { toast } = useToast();
+  const t = translations[lang];
+
+  const aiFormSchema = z.object({
+    pastInteractions: z.string().min(10),
+    preferences: z.string().min(10),
+  });
 
   const form = useForm<z.infer<typeof aiFormSchema>>({
     resolver: zodResolver(aiFormSchema),
@@ -546,11 +671,10 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
       const result = await generatePersonalizedChallenge(values);
       setGeneratedChallenge(result.challenge);
     } catch (error) {
-      console.error(error);
       toast({
         variant: "destructive",
-        title: "حدث خطأ",
-        description: "لم نتمكن من إنشاء تحدي. يرجى المحاولة مرة أخرى.",
+        title: "Error",
+        description: "Could not generate challenge. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -561,8 +685,10 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
     if(generatedChallenge) {
       onSelectChallenge({
         id: `ai-${Date.now()}`,
-        title: "تحدي مولد بالذكاء الاصطناعي",
-        description: generatedChallenge,
+        titleAr: t.messages.aiTitle,
+        titleEn: t.messages.aiTitle,
+        descriptionAr: generatedChallenge,
+        descriptionEn: generatedChallenge,
         category: 'position',
         timer: 600,
         image: 'https://placehold.co/600x400.png',
@@ -574,10 +700,8 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
     <Card className="max-w-3xl mx-auto shadow-lg">
       <CardHeader className="text-center">
         <BrainCircuit className="mx-auto h-16 w-16 text-primary" />
-        <CardTitle className="text-3xl font-headline">مولد التحديات بالذكااء الاصطناعي</CardTitle>
-        <CardDescription>
-          احصل على تحديات مخصصة تمامًا لكما بناءً على تفضيلاتكما وتفاعلاتكما السابقة.
-        </CardDescription>
+        <CardTitle className="text-3xl font-headline">{t.tabs.generator}</CardTitle>
+        <CardDescription>{t.messages.aiWelcome}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -587,17 +711,10 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
               name="pastInteractions"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>التفاعلات السابقة</FormLabel>
+                  <FormLabel>{t.labels.pastInteractions}</FormLabel>
                   <FormControl>
-                    <Textarea
-                      rows={4}
-                      placeholder="مثال: نستمتع بالأوضاع الجديدة ولكننا نفضل الإيلاج اللطيف. آخر مرة جربنا تحدي تذوق..."
-                      {...field}
-                    />
+                    <Textarea rows={4} placeholder={t.placeholders.pastInteractions} {...field} />
                   </FormControl>
-                  <FormDescription>
-                    صف بإيجاز بعض الأنشطة أو التحديات التي استمتعتما بها في الماضي.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -607,23 +724,16 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
               name="preferences"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>التفضيلات الحالية</FormLabel>
+                  <FormLabel>{t.labels.preferences}</FormLabel>
                   <FormControl>
-                    <Textarea
-                      rows={4}
-                      placeholder="مثال: نرغب في تجربة شيء أكثر جرأة، ربما يتضمن ألعاب تمثيل الأدوار أو تحديات سريعة..."
-                      {...field}
-                    />
+                    <Textarea rows={4} placeholder={t.placeholders.preferences} {...field} />
                   </FormControl>
-                  <FormDescription>
-                    ما هو نوع التجربة التي تبحثان عنها الآن؟
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "جاري الإنشاء..." : "أنشئ تحديًا شخصيًا"}
+              {isLoading ? t.buttons.generating : t.buttons.generate}
             </Button>
           </form>
         </Form>
@@ -632,22 +742,21 @@ const AiChallengeGenerator = ({ onSelectChallenge }: { onSelectChallenge: (act: 
             <div className="mt-6 space-y-4">
                 <Skeleton className="h-8 w-3/4 mx-auto" />
                 <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-5/6" />
             </div>
         )}
 
         {generatedChallenge && (
             <Card className="mt-6 bg-primary/10">
                 <CardHeader>
-                    <CardTitle>التحدي المقترح لكما!</CardTitle>
+                    <CardTitle>{t.messages.aiSuggested}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-lg">{generatedChallenge}</p>
                 </CardContent>
                 <CardFooter>
                     <Button onClick={viewGeneratedChallenge} className="w-full">
-                         <Sparkles className="mr-2 h-4 w-4" />
-                        ابدأ هذا التحدي
+                         <Sparkles className={cn(lang === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+                        {t.buttons.start}
                     </Button>
                 </CardFooter>
             </Card>
@@ -662,57 +771,67 @@ export default function Home() {
   const [acts, setActs] = React.useState<Act[]>(initialActs);
   const [selectedChallenge, setSelectedChallenge] = React.useState<Act | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [language, setLanguage] = React.useState<Lang>("ar");
+
+  React.useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
 
   const handleSelectChallenge = (act: Act) => {
     setSelectedChallenge(act);
     setIsDialogOpen(true);
   };
 
-  const handleAddAct = (act: Act) => {
-    setActs(prev => [act, ...prev]);
-  }
-  
+  const handleAddAct = (act: Act) => setActs(prev => [act, ...prev]);
   const handleEditAct = (updatedAct: Act) => {
     setActs(prev => prev.map(act => act.id === updatedAct.id ? updatedAct : act));
-  }
+  };
+
+  const t = translations[language];
 
   return (
     <main className="min-h-screen bg-background text-foreground font-body p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto">
-        <header className="text-center mb-8">
-          <h1 className="text-5xl font-headline font-extrabold text-primary">Habibi's Heat</h1>
-          <p className="text-muted-foreground text-lg mt-2">لعبة الحب الخاص بكم</p>
+        <header className="relative text-center mb-8">
+          <div className={cn("absolute top-0", language === 'ar' ? "left-0" : "right-0")}>
+            <Button variant="ghost" size="icon" onClick={() => setLanguage(l => l === 'ar' ? 'en' : 'ar')}>
+              <Languages className="h-6 w-6 text-primary" />
+            </Button>
+          </div>
+          <h1 className="text-5xl font-headline font-extrabold text-primary">{t.title}</h1>
+          <p className="text-muted-foreground text-lg mt-2">{t.subtitle}</p>
         </header>
 
         <Tabs defaultValue="library" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-primary/10">
             <TabsTrigger value="library">
-              <Library className="mr-2 h-4 w-4" />
-              مكتبة الأفعال
+              <Library className={cn(language === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+              {t.tabs.library}
             </TabsTrigger>
             <TabsTrigger value="random">
-              <Dices className="mr-2 h-4 w-4" />
-              تحدي عشوائي
+              <Dices className={cn(language === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+              {t.tabs.random}
             </TabsTrigger>
             <TabsTrigger value="ai">
-              <BrainCircuit className="mr-2 h-4 w-4" />
-              مولد التحديات
+              <BrainCircuit className={cn(language === 'ar' ? "ml-2" : "mr-2", "h-4 w-4")} />
+              {t.tabs.generator}
             </TabsTrigger>
           </TabsList>
           <TabsContent value="library" className="mt-6">
-            <ActLibrary acts={acts} onSelectChallenge={handleSelectChallenge} onAddAct={handleAddAct} onEditAct={handleEditAct} />
+            <ActLibrary acts={acts} onSelectChallenge={handleSelectChallenge} onAddAct={handleAddAct} onEditAct={handleEditAct} lang={language} />
           </TabsContent>
           <TabsContent value="random" className="mt-6">
-            <RandomChallenge acts={acts} onSelectChallenge={handleSelectChallenge} />
+            <RandomChallenge acts={acts} onSelectChallenge={handleSelectChallenge} lang={language} />
           </TabsContent>
           <TabsContent value="ai" className="mt-6">
-            <AiChallengeGenerator onSelectChallenge={handleSelectChallenge} />
+            <AiChallengeGenerator onSelectChallenge={handleSelectChallenge} lang={language} />
           </TabsContent>
         </Tabs>
         
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="max-w-lg">
-            <ChallengeView challenge={selectedChallenge} />
+            <ChallengeView challenge={selectedChallenge} lang={language} />
           </DialogContent>
         </Dialog>
       </div>
